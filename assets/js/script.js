@@ -139,24 +139,32 @@ for (let i = 0; i < navigationLinks.length; i++) {
 }
 // === Form submission ===
 form.addEventListener("submit", function (e) {
-  e.preventDefault(); // stop the default page refresh
+  e.preventDefault(); // prevent default page reload
 
-  // You can build the payload any way you like:
   const formData = new FormData(form);
+  const payload = {};
+  formData.forEach((value, key) => {
+    payload[key] = value;
+  });
 
-  // Example: send to your backend
-  fetch("https://your-backend.example.com/contact", {
-    method: "POST",
-    body: formData,
-  })
+  fetch(
+    "https://script.google.com/macros/s/AKfycbxfZpE9KXmGLS3G-BbOHMAcY0IaEhfAPvwvDE0KU6DLLR8etEzbnPX6jeVuHUOh9ZhNRA/exec",
+    {
+      method: "POST",
+      body: JSON.stringify(payload),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  )
     .then((res) => {
       if (!res.ok) throw new Error("Network response was not ok");
-      return res.json();
+      return res.text(); // Apps Script returns plain text
     })
     .then((data) => {
       alert("Message sent successfully!");
       form.reset();
-      formBtn.setAttribute("disabled", ""); // disable again until new valid input
+      formBtn.setAttribute("disabled", "");
     })
     .catch((err) => {
       console.error(err);
